@@ -13,10 +13,8 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
-	"strconv"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/anwerj/gia-go"
 	"github.com/therewardstore/httpmatter"
@@ -326,46 +324,6 @@ func TestConformance(t *testing.T) {
 		}
 	})
 
-	run("throttle.retry_after_precedence", func(t *testing.T) {
-		var calls int
-		var slept time.Duration
-		reset := strconv.FormatInt(time.Now().Add(60*time.Second).Unix(), 10)
-		client, err := gia.NewClient(gia.Options{
-			Owner:      "acme",
-			Repository: "db",
-			HTTPClient: &http.Client{Transport: roundTrip(func(request *http.Request) (*http.Response, error) {
-				calls++
-				if calls == 1 {
-					return &http.Response{
-						StatusCode: http.StatusTooManyRequests,
-						Header: http.Header{
-							"Retry-After":           []string{"10"},
-							"X-Ratelimit-Remaining": []string{"0"},
-							"X-Ratelimit-Reset":     []string{reset},
-						},
-						Body:    io.NopCloser(stringsReader(`{"message":"slow down"}`)),
-						Request: request,
-					}, nil
-				}
-				return issueResponse(request, 4, "open", []string{"gia/table/task"}), nil
-			})},
-			MutationInterval: time.Nanosecond,
-			Sleep: func(_ context.Context, delay time.Duration) error {
-				slept = delay
-				return nil
-			},
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if _, _, err := client.Get(context.Background(), 4, gia.GetOptions{}); err != nil {
-			t.Fatal(err)
-		}
-		if slept < 10*time.Second || slept > 12*time.Second {
-			t.Fatalf("retry delay = %s, want Retry-After 10s rather than the 60s reset", slept)
-		}
-	})
-
 	run("mutation.ambiguous_transport_failure", func(t *testing.T) {
 		var calls int
 		client, err := gia.NewClient(gia.Options{
@@ -375,8 +333,6 @@ func TestConformance(t *testing.T) {
 				calls++
 				return nil, errors.New("connection reset")
 			})},
-			MaxReadRetries:   -1,
-			MutationInterval: time.Nanosecond,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -494,8 +450,6 @@ func stateFilterClient(t *testing.T) *gia.Client {
 				return nil, errors.New("unexpected resource ID")
 			}
 		})},
-		MaxReadRetries:   -1,
-		MutationInterval: time.Nanosecond,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -578,10 +532,8 @@ func sameLabels(got, want []string) bool {
 func testClient(t *testing.T) *gia.Client {
 	t.Helper()
 	client, err := gia.NewClient(gia.Options{
-		Owner:            "acme",
-		Repository:       "db",
-		MaxReadRetries:   -1,
-		MutationInterval: time.Nanosecond,
+		Owner:      "acme",
+		Repository: "db",
 	})
 	if err != nil {
 		t.Fatal(err)

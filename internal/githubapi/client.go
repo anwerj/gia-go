@@ -1,7 +1,6 @@
 package githubapi
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -12,17 +11,12 @@ import (
 )
 
 type Config struct {
-	Owner            string
-	Repository       string
-	Token            string
-	HTTPClient       *http.Client
-	RESTBaseURL      string
-	GraphQLURL       string
-	MaxConcurrency   int
-	MaxReadRetries   int
-	MutationInterval time.Duration
-	Now              func() time.Time
-	Sleep            func(context.Context, time.Duration) error
+	Owner       string
+	Repository  string
+	Token       string
+	HTTPClient  *http.Client
+	RESTBaseURL string
+	GraphQLURL  string
 }
 
 type Client struct {
@@ -39,15 +33,7 @@ func New(config Config) (*Client, error) {
 		baseClient = &http.Client{Timeout: 30 * time.Second}
 	}
 	httpClient := *baseClient
-	httpClient.Transport = newPolicyTransport(
-		baseClient.Transport,
-		config.Token,
-		config.MaxConcurrency,
-		config.MaxReadRetries,
-		config.MutationInterval,
-		config.Now,
-		config.Sleep,
-	)
+	httpClient.Transport = newHeaderTransport(baseClient.Transport, config.Token)
 
 	clientOptions := []github.ClientOptionsFunc{
 		github.WithHTTPClient(&httpClient),
