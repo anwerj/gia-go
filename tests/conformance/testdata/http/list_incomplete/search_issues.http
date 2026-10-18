@@ -1,0 +1,3 @@
+GET https://api.github.com/search/issues?order=desc&page=1&per_page=100&q=repo%3Aacme%2Fdb+is%3Aissue+%22example%22+in%3Atitle+is%3Aopen&sort=created HTTP/1.1
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2026-03-10

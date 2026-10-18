@@ -1,0 +1,51 @@
+{
+  "resource": {
+    "id": 42,
+    "title": "Concise technical tone",
+    "body": "Prefer direct language and concrete examples.",
+    "table": "tone",
+    "labels": [
+      "gia/table/tone",
+      "gia/scope/personal",
+      "documentation"
+    ],
+    "state": "active",
+    "created_at": "2026-01-02T03:04:05Z",
+    "updated_at": "2026-01-03T03:04:05Z",
+    "etag": "\"example-etag\""
+  },
+  "section": {
+    "id": 9001,
+    "body": "Avoid unnecessary introductory paragraphs.",
+    "author": "octocat",
+    "created_at": "2026-01-03T04:00:00Z",
+    "updated_at": "2026-01-03T04:00:00Z"
+  },
+  "page": {
+    "items": [],
+    "next_token": "opaque:example",
+    "exhausted": false,
+    "incomplete": false,
+    "truncated": false,
+    "meta": {
+      "request_id": "ABC0:1234",
+      "etag": "\"page-etag\"",
+      "rate": {
+        "limit": 5000,
+        "remaining": 4999,
+        "reset_at": "2026-01-03T05:00:00Z"
+      }
+    }
+  },
+  "rate_error": {
+    "code": "rate_limited",
+    "message": "GitHub API rate limit exceeded",
+    "outcome": "not_applied",
+    "status": 429,
+    "request_id": "ABC0:1234",
+    "rate": {
+      "remaining": 0,
+      "retry_at": "2026-01-03T05:00:00Z"
+    }
+  }
+}

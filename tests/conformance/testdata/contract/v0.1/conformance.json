@@ -1,0 +1,184 @@
+{
+  "contract": "GiaDB",
+  "version": "0.1.0",
+  "scenarios": [
+    {
+      "id": "labels.valid",
+      "input": ["gia/table/skill", "gia/scope/personal", "docs"],
+      "expect": { "kind": "resource", "table": "skill" }
+    },
+    {
+      "id": "labels.ordinary_issue",
+      "input": ["bug", "docs"],
+      "expect": { "kind": "non_resource" }
+    },
+    {
+      "id": "labels.multiple_tables",
+      "input": ["gia/table/skill", "gia/table/task"],
+      "expect": { "error": "invalid_resource" }
+    },
+    {
+      "id": "labels.invalid_table",
+      "input": ["gia/table/Bad Name"],
+      "expect": { "error": "invalid_resource" }
+    },
+    {
+      "id": "resource.table_matches_labels",
+      "input": {
+        "table": "skill",
+        "labels": ["gia/table/skill", "docs"]
+      },
+      "expect": { "valid": true }
+    },
+    {
+      "id": "resource.table_mismatch",
+      "input": {
+        "table": "task",
+        "labels": ["gia/table/skill", "docs"]
+      },
+      "expect": { "error": "invalid_resource" }
+    },
+    {
+      "id": "list.pull_request",
+      "input": { "number": 7, "pull_request": {} },
+      "expect": { "kind": "non_resource" }
+    },
+    {
+      "id": "list.empty_filtered_page_continues",
+      "input": {
+        "items": [{ "number": 8, "labels": ["bug"] }],
+        "next_token": "opaque-next"
+      },
+      "expect": {
+        "item_count": 0,
+        "exhausted": false,
+        "next_token": "opaque-next"
+      }
+    },
+    {
+      "id": "list.state_default",
+      "input": {
+        "resources": [
+          { "id": 41, "state": "active" },
+          { "id": 42, "state": "forgotten" }
+        ]
+      },
+      "expect": { "ids": [41] }
+    },
+    {
+      "id": "list.state_active",
+      "input": {
+        "state": "active",
+        "resources": [
+          { "id": 41, "state": "active" },
+          { "id": 42, "state": "forgotten" }
+        ]
+      },
+      "expect": { "ids": [41] }
+    },
+    {
+      "id": "list.state_forgotten",
+      "input": {
+        "state": "forgotten",
+        "resources": [
+          { "id": 41, "state": "active" },
+          { "id": 42, "state": "forgotten" }
+        ]
+      },
+      "expect": { "ids": [42] }
+    },
+    {
+      "id": "sections.are_separate",
+      "input": { "resource": 12, "comment_count": 3 },
+      "expect": { "resource_has_sections": false }
+    },
+    {
+      "id": "list.title_match_truncated",
+      "input": {
+        "reported_total": 1200,
+        "incomplete_results": false
+      },
+      "expect": { "truncated": true, "retrievable_limit": 1000 }
+    },
+    {
+      "id": "list.title_match_incomplete",
+      "input": {
+        "reported_total": 4,
+        "incomplete_results": true
+      },
+      "expect": { "incomplete": true }
+    },
+    {
+      "id": "update.preserve_labels",
+      "input": {
+        "before": ["gia/table/skill", "docs", "custom"],
+        "table": "task"
+      },
+      "expect": {
+        "labels": ["gia/table/task", "docs", "custom"]
+      }
+    },
+    {
+      "id": "update.replace_labels",
+      "input": {
+        "before": ["gia/table/skill", "docs", "custom"],
+        "labels": ["gia/table/skill", "personal"]
+      },
+      "expect": {
+        "labels": ["gia/table/skill", "personal"]
+      }
+    },
+    {
+      "id": "update.table_with_labels",
+      "input": {
+        "before": ["gia/table/skill", "docs", "custom"],
+        "table": "task",
+        "labels": ["personal"]
+      },
+      "expect": {
+        "labels": ["gia/table/task", "personal"]
+      }
+    },
+    {
+      "id": "update.conflicting_table",
+      "input": {
+        "before": ["gia/table/skill", "docs"],
+        "table": "task",
+        "labels": ["gia/table/process", "personal"]
+      },
+      "expect": { "error": "invalid_argument" }
+    },
+    {
+      "id": "lifecycle.forget",
+      "input": { "state": "active" },
+      "expect": { "state": "forgotten" }
+    },
+    {
+      "id": "lifecycle.reopen",
+      "input": { "state": "forgotten" },
+      "expect": { "state": "active" }
+    },
+    {
+      "id": "throttle.retry_after_precedence",
+      "input": {
+        "retry_after_seconds": 10,
+        "reset_after_seconds": 60
+      },
+      "expect": { "retry_after_seconds": 10 }
+    },
+    {
+      "id": "mutation.ambiguous_transport_failure",
+      "input": {
+        "method": "POST",
+        "request_body_sent": true,
+        "response_received": false
+      },
+      "expect": { "error": "outcome_unknown", "retried": false }
+    },
+    {
+      "id": "conditional.not_modified",
+      "input": { "status": 304, "cached_body": false },
+      "expect": { "error": "not_modified" }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "GiaDB",
+  "version": "0.1.0",
+  "specification": "../../SPEC.md",
+  "schema_dialect": "https://json-schema.org/draft/2020-12/schema",
+  "files": [
+    {
+      "path": "contract.schema.json",
+      "sha256": "78e228672e7869c05d02a76a62b8c70f6b8c979454f5f57b15347a62bc01d196"
+    },
+    {
+      "path": "conformance.schema.json",
+      "sha256": "e221fe6cc29d71400e66755b45b6bc5838a48c50eb379b1b6378ec21348ae468"
+    },
+    {
+      "path": "examples.json",
+      "sha256": "35c6a20ac0e374ed23e8c0dbb85e6c3daa6240777c1590eff777fd25dec42506"
+    },
+    {
+      "path": "conformance.json",
+      "sha256": "e97c6727ce968b251c9c972a257bb7dd62c18312b0d2485335a0aebd31385c7e"
+    }
+  ]
+}

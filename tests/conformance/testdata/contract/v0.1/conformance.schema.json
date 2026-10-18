@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/anwerj/gia-db/contract/v0.1/conformance.schema.json",
+  "title": "GiaDB v0.1 conformance scenarios",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "version", "scenarios"],
+  "properties": {
+    "contract": { "const": "GiaDB" },
+    "version": { "const": "0.1.0" },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "input", "expect"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          },
+          "input": {},
+          "expect": {
+            "type": "object",
+            "minProperties": 1
+          }
+        }
+      }
+    }
+  }
+}

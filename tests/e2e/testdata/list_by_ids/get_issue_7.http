@@ -1,0 +1,3 @@
+GET https://api.github.com/repos/acme/db/issues/7 HTTP/1.1
+Accept: application/vnd.github+json
+X-GitHub-Api-Version: 2026-03-10

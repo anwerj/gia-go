@@ -1,0 +1,24 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "data": {
+    "repository": {
+      "issues": {
+        "nodes": [
+          {
+            "number": 8,
+            "title": "ordinary",
+            "body": "",
+            "state": "OPEN",
+            "createdAt": "2026-01-02T03:04:05Z",
+            "updatedAt": "2026-01-02T03:04:05Z",
+            "labels": {"nodes": [{"name": "bug"}], "pageInfo": {"hasNextPage": false}}
+          }
+        ],
+        "pageInfo": {"hasNextPage": false, "endCursor": ""}
+      }
+    },
+    "rateLimit": {"limit": 5000, "remaining": 4999, "resetAt": "2026-01-02T04:04:05Z"}
+  }
+}

@@ -1,0 +1,12 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "number": 17,
+  "title": "Example",
+  "body": "Body",
+  "state": "open",
+  "labels": [{"name": "docs"}, {"name": "gia/table/skill"}],
+  "created_at": "2026-01-02T03:04:05Z",
+  "updated_at": "2026-01-02T03:04:05Z"
+}

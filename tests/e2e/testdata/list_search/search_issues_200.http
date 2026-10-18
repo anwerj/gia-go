@@ -1,0 +1,25 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "total_count": 1200,
+  "incomplete_results": true,
+  "items": [
+    {
+      "number": 8,
+      "title": "pull",
+      "state": "open",
+      "labels": [{"name": "gia/table/task"}],
+      "pull_request": {"url": "https://example.test/pulls/8"}
+    },
+    {
+      "number": 9,
+      "title": "issue",
+      "body": "body",
+      "state": "open",
+      "labels": [{"name": "gia/table/task"}],
+      "created_at": "2026-01-02T03:04:05Z",
+      "updated_at": "2026-01-02T03:04:05Z"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+POST https://api.github.com/repos/acme/db/issues HTTP/1.1
+Accept: application/vnd.github+json
+Content-Type: application/json
+X-GitHub-Api-Version: 2026-03-10
+
+{
+  "title": "Example",
+  "body": "Body",
+  "labels": ["docs", "gia/table/skill"]
+}

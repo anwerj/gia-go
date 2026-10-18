@@ -1,0 +1,20 @@
+POST https://api.github.com/graphql HTTP/1.1
+Accept: application/vnd.github+json
+Content-Type: application/json
+X-GitHub-Api-Version: 2026-03-10
+
+{
+  "query": "\nquery GIADBListIssues(\n  $owner: String!,\n  $repository: String!,\n  $first: Int!,\n  $after: String,\n  $states: [IssueState!],\n  $labels: [String!],\n  $orderBy: IssueOrder\n) {\n  repository(owner: $owner, name: $repository) {\n    issues(first: $first, after: $after, states: $states, labels: $labels, orderBy: $orderBy) {\n      nodes {\n        number\n        title\n        body\n        state\n        createdAt\n        updatedAt\n        labels(first: 100) {\n          nodes { name }\n          pageInfo { hasNextPage }\n        }\n      }\n      pageInfo { hasNextPage endCursor }\n    }\n  }\n  rateLimit { limit remaining resetAt }\n}",
+  "variables": {
+    "after": null,
+    "first": 100,
+    "labels": null,
+    "orderBy": {
+      "direction": "DESC",
+      "field": "CREATED_AT"
+    },
+    "owner": "acme",
+    "repository": "db",
+    "states": ["OPEN"]
+  }
+}

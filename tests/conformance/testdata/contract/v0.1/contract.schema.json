@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/anwerj/gia-db/contract/v0.1/contract.schema.json",
+  "title": "GiaDB v0.1 logical contract",
+  "$defs": {
+    "state": {
+      "enum": ["active", "forgotten"]
+    },
+    "resource": {
+      "type": "object",
+      "$comment": "table must equal the value of the single gia/table/<name> label; tools/validate_contract.py enforces this cross-field rule",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "body",
+        "table",
+        "labels",
+        "state",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "table": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,39}$"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "if": { "pattern": "^gia/table/" },
+            "then": {
+              "pattern": "^gia/table/[a-z0-9][a-z0-9._-]{0,39}$"
+            }
+          },
+          "uniqueItems": true,
+          "contains": {
+            "pattern": "^gia/table/[a-z0-9][a-z0-9._-]{0,39}$"
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        "state": { "$ref": "#/$defs/state" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "etag": { "type": "string" }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "body", "author", "created_at", "updated_at"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 1 },
+        "body": { "type": "string" },
+        "author": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "limit": { "type": "integer", "minimum": 0 },
+        "remaining": { "type": "integer", "minimum": 0 },
+        "reset_at": { "type": "string", "format": "date-time" },
+        "retry_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "response_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id"],
+      "properties": {
+        "request_id": { "type": "string" },
+        "etag": { "type": "string" },
+        "rate": { "$ref": "#/$defs/rate" }
+      }
+    },
+    "resource_page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "exhausted",
+        "meta",
+        "incomplete",
+        "truncated"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/resource" }
+        },
+        "next_token": { "type": "string", "minLength": 1 },
+        "exhausted": { "type": "boolean" },
+        "meta": { "$ref": "#/$defs/response_meta" },
+        "reported_total": { "type": "integer", "minimum": 0 },
+        "incomplete": { "type": "boolean" },
+        "truncated": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "exhausted": { "const": false } } },
+          "then": { "required": ["next_token"] }
+        }
+      ]
+    },
+    "list_query": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1 },
+          "uniqueItems": true
+        },
+        "title_match": { "type": "string" },
+        "created_since": { "type": "string", "format": "date-time" },
+        "updated_since": { "type": "string", "format": "date-time" },
+        "state": { "enum": ["active", "forgotten", "all"] },
+        "table": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,39}$"
+        },
+        "all_labels": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "sort": { "enum": ["created", "updated"] },
+        "direction": { "enum": ["asc", "desc"] },
+        "page_size": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "page_token": { "type": "string", "minLength": 1 }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "outcome"],
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_argument",
+            "not_found",
+            "authentication",
+            "permission",
+            "validation",
+            "invalid_resource",
+            "rate_limited",
+            "not_modified",
+            "transport",
+            "github",
+            "outcome_unknown"
+          ]
+        },
+        "message": { "type": "string" },
+        "outcome": { "enum": ["not_applied", "applied", "unknown"] },
+        "status": { "type": "integer", "minimum": 0 },
+        "request_id": { "type": "string" },
+        "rate": { "$ref": "#/$defs/rate" }
+      }
+    }
+  }
+}
