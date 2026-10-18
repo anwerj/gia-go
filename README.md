@@ -33,7 +33,8 @@ Important behavior:
   matching, state, table, labels, timestamps, sorting, and pagination.
 - Search-backed `List` calls expose incomplete and 1,000-result truncation
   indicators.
-- Mutations are not automatically retried after ambiguous failures.
+- The SDK does not retry, pace, or limit concurrency. Throttled responses are returned as `rate_limited` with the GitHub rate-limit details.
+- An ambiguous mutation transport failure is `outcome_unknown`.
 - Shared issue field updates are last-write-wins.
 
 Callers may supply an authenticated `http.Client` instead of `Token`. GitHub

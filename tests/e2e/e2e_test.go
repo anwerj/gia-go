@@ -9,7 +9,6 @@ import (
 	"os"
 	"reflect"
 	"testing"
-	"time"
 
 	"github.com/anwerj/gia-go"
 	"github.com/therewardstore/httpmatter"
@@ -176,10 +175,8 @@ func jsonEqual(got, want []byte) bool {
 func testClient(t *testing.T) *gia.Client {
 	t.Helper()
 	client, err := gia.NewClient(gia.Options{
-		Owner:            "acme",
-		Repository:       "db",
-		MaxReadRetries:   -1,
-		MutationInterval: time.Nanosecond,
+		Owner:      "acme",
+		Repository: "db",
 	})
 	if err != nil {
 		t.Fatal(err)

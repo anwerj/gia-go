@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"slices"
 	"strings"
-	"time"
 
 	"github.com/anwerj/gia-go/internal/githubapi"
 )
@@ -16,19 +15,12 @@ import (
 var tableNamePattern = regexp.MustCompile(`^[a-z0-9][a-z0-9._-]{0,39}$`)
 
 type Options struct {
-	Owner            string
-	Repository       string
-	Token            string
-	HTTPClient       *http.Client
-	RESTBaseURL      string
-	GraphQLURL       string
-	MaxConcurrency   int
-	MaxReadRetries   int
-	MutationInterval time.Duration
-
-	// Clock and Sleep are intended for deterministic policy tests.
-	Clock func() time.Time
-	Sleep func(context.Context, time.Duration) error
+	Owner       string
+	Repository  string
+	Token       string
+	HTTPClient  *http.Client
+	RESTBaseURL string
+	GraphQLURL  string
 }
 
 type Client struct {
@@ -42,27 +34,13 @@ func NewClient(options Options) (*Client, error) {
 	if strings.TrimSpace(options.Repository) == "" {
 		return nil, invalidArgument("repository is required")
 	}
-	if options.MaxConcurrency == 0 {
-		options.MaxConcurrency = 4
-	}
-	if options.MaxReadRetries == 0 {
-		options.MaxReadRetries = 2
-	}
-	if options.MutationInterval == 0 {
-		options.MutationInterval = time.Second
-	}
 	api, err := githubapi.New(githubapi.Config{
-		Owner:            options.Owner,
-		Repository:       options.Repository,
-		Token:            options.Token,
-		HTTPClient:       options.HTTPClient,
-		RESTBaseURL:      options.RESTBaseURL,
-		GraphQLURL:       options.GraphQLURL,
-		MaxConcurrency:   options.MaxConcurrency,
-		MaxReadRetries:   options.MaxReadRetries,
-		MutationInterval: options.MutationInterval,
-		Now:              options.Clock,
-		Sleep:            options.Sleep,
+		Owner:       options.Owner,
+		Repository:  options.Repository,
+		Token:       options.Token,
+		HTTPClient:  options.HTTPClient,
+		RESTBaseURL: options.RESTBaseURL,
+		GraphQLURL:  options.GraphQLURL,
 	})
 	if err != nil {
 		return nil, invalidArgument(err.Error())

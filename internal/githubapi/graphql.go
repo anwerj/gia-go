@@ -149,7 +149,6 @@ func (c *Client) ListIssues(ctx context.Context, input ListInput) (IssuePage, er
 		return IssuePage{}, &Error{Code: "transport", Message: err.Error(), Cause: err}
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("X-GIADB-Safe-Request", "true")
 	response, err := c.http.Do(request)
 	if err != nil {
 		return IssuePage{}, apiError(err, false)
